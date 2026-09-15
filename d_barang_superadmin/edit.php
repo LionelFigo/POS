@@ -119,10 +119,6 @@ if($authority != 's'){
                         <input type="text" name="merk" value="<?= $data['merk'] ?>" class="form-control" id="merk" placeholder="Masukkan Nama Merk" required>
                     </div>
                     <div class="form-group">
-                        <label for="stok">Stok</label>
-                        <input type="number" name="stok" value="<?= $data['stok'] ?>" class="form-control" id="stok" placeholder="Masukkan Jumlah Stok" required>
-                    </div>
-                    <div class="form-group">
                         <label for="rata_harga_beli">Harga Beli</label>
                         <input type="number" value="<?= $data['rata_harga_beli'] ?>" name="rata_harga_beli" class="form-control" id="rata_harga_beli" placeholder="Masukkan Harga Beli">
                     </div>

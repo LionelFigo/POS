@@ -6,7 +6,6 @@ if (isset($_POST['btn_edit'])){
     $kode_supplier = trim(mysqli_real_escape_string($koneksi, $_POST['kode_supplier']));
     $nama_brg = trim(mysqli_real_escape_string($koneksi, $_POST['nama_barang']));
     $merk = trim(mysqli_real_escape_string($koneksi, $_POST['merk']));
-    $stok = trim(mysqli_real_escape_string($koneksi, $_POST['stok']));
     $harga_beli = trim(mysqli_real_escape_string($koneksi, $_POST['rata_harga_beli']));
     $harga_jual = trim(mysqli_real_escape_string($koneksi, $_POST['harga_jual']));
 
@@ -14,7 +13,6 @@ if (isset($_POST['btn_edit'])){
     kode_supplier = '$kode_supplier',
     nama_brg = '$nama_brg',
     merk = '$merk',
-    stok = '$stok',
     rata_harga_beli = '$harga_beli',
     harga_jual = '$harga_jual'
     where kode_brg = '$kode'

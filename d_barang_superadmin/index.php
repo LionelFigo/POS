@@ -108,17 +108,18 @@ if($authority != 's'){
                             <th>Stok</th>
                             <th>Rata Harga Beli</th>
                             <th>Harga Jual</th>
+                            <th>Barcode</th>
                             <th>Gambar</th>
                             <th>Aksi</th>
                         </tr>
                     </thead>
                     <tbody>
                         <?php 
-                        $panggil_supplier = mysqli_query($koneksi, "SELECT * from barang")or die(mysqli_error($koneksi));
-                        $rv = mysqli_num_rows($panggil_supplier);
+                        $panggil_brg = mysqli_query($koneksi, "SELECT * from barang where jenis_brg = 'reguler'")or die(mysqli_error($koneksi));
+                        $rv = mysqli_num_rows($panggil_brg);
                         if($rv > 0){
                             $no = 1;
-                            while ($data = mysqli_fetch_array($panggil_supplier)) {
+                            while ($data = mysqli_fetch_array($panggil_brg)) {
                                 $kode = $data['kode_brg'];
                                 $kode_supplier = $data['kode_supplier'];
                                 $nama_brg = $data['nama_brg'];
@@ -138,6 +139,19 @@ if($authority != 's'){
                                     <td><?= $harga_beli ?></td>
                                     <td><?= $harga_jual ?></td>
                                     <td>
+                                      <img class="barcode" id="barcode-<?= $kode ?>"
+                                        jsbarcode-value="<?= $kode ?>"
+                                        jsbarcode-textmargin="0"
+                                        jsbarcode-width="1.0" 
+                                        jsbarcode-height="20"
+                                        jsbarcode-fontoptions="bold">
+                                      
+                                        <br>
+                                        <button onclick="downloadBarcode('<?= $kode ?>')" class="btn btn-danger btn-xs mt-1">
+                                          <i class="fas fa-download"></i>Download
+                                        </button>
+                                    </td>
+                                    <td>
                                       <button data-toggle="modal" data-target="#modal-foto" class="btn btn-default" data-kode="<?= $kode ?>">
                                         <img src="<?= (!empty($foto)) ? $foto : '../asset_web/img/barang_icon.jpg' ?>" width="50px" alt="gaada foto" >
                                       </button>
@@ -152,7 +166,7 @@ if($authority != 's'){
                         }else{
                             ?>
                             <tr>
-                                <td colspan="10" align="center">Tidak Ada Data Barang</td>
+                                <td colspan="11" align="center">Tidak Ada Data Barang</td>
                             </tr>
                             <?php
                         }
@@ -198,10 +212,6 @@ if($authority != 's'){
                 <div class="form-group">
                     <label for="merk">Merk</label>
                     <input type="text" name="merk" class="form-control" id="merk" placeholder="Masukkan Nama Merk" required>
-                </div>
-                <div class="form-group">
-                    <label for="stok">Stok</label>
-                    <input type="number" name="stok" class="form-control" id="stok" placeholder="Masukkan Jumlah Stok" required>
                 </div>
                 <div class="form-group">
                     <label for="rata_harga_beli">Harga Beli</label>
@@ -264,6 +274,24 @@ if($authority != 's'){
 
     $(e.currentTarget).find('input[name="kode_barang"]').val(kode);
   })
+</script>
+<script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.0/dist/JsBarcode.all.min.js"></script>
+<script>
+  JsBarcode(".barcode").init();
+
+  function downloadBarcode(kode) {
+    var imgElement = document.getElementById('barcode-' + kode);
+    
+    var imageURL = imgElement.src;
+
+    var link = document.createElement("a");
+    link.href = imageURL;
+    link.download = "Barcode_" + kode + ".png";
+    
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  }
 </script>
 </body>
 </html>

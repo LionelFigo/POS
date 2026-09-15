@@ -1,0 +1,17 @@
+<?php 
+require_once '../database/koneksi.php';
+
+$urut = @$_GET['urut'];
+$ambil_harga = mysqli_query($koneksi, "SELECT * from detail_notajual where urut = '$urut'")or die(mysqli_error($koneksi));
+$data_detail = mysqli_fetch_assoc($ambil_harga);
+$kode_nota = $data_detail['kode_nota'];
+$kode_brg = $data_detail['kode_brg'];
+$harga = $data_detail['total_harga_jual'];
+$jumlah = $data_detail['jumlah'];
+
+$update_total = mysqli_query($koneksi, "UPDATE nota_penjualan set total_penjualan = total_penjualan - '$harga' where kode_nota = '$kode_nota'")or die(mysqli_error($koneksi));
+$update_stok = mysqli_query($koneksi, "UPDATE barang set stok = stok + '$jumlah' where kode_brg = '$kode_brg'")or die(mysqli_error($koneksi));
+$hapus = mysqli_query($koneksi, "DELETE from detail_notajual where urut = '$urut'")or die(mysqli_error($koneksi));
+echo '<script>alert("Berhasil Hapus Data");
+window.location.href="index.php?kode_nota='.$kode_nota.'"</script>';
+?>
