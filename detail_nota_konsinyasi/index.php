@@ -175,10 +175,9 @@ if($authority != 's'){
                 <select name="kode_barang" class="form-control" id="kode_barang" required>
                     <option value="">-- Pilih Barang --</option>
                     <?php
-                    $ambil_brg = mysqli_query($koneksi, "SELECT kode_brg, nama_brg, jenis_brg, rata_harga_beli FROM barang ORDER BY nama_brg ASC") or die(mysqli_error($koneksi));
+                    $ambil_brg = mysqli_query($koneksi, "SELECT kode_brg, nama_brg, jenis_brg, rata_harga_beli FROM barang where jenis_brg = 'konsinyasi' ORDER BY nama_brg ASC") or die(mysqli_error($koneksi));
                     while($b = mysqli_fetch_assoc($ambil_brg)){
-                        $tipe = ($b['jenis_brg'] == 'konsinyasi') ? '[Konsinyasi]' : '[Reguler]';
-                        echo '<option value="'.$b['kode_brg'].'" data-harga="'.$b['rata_harga_beli'].'">'.$tipe.' '.$b['kode_brg'].' - '.$b['nama_brg'].'</option>';
+                        echo '<option value="'.$b['kode_brg'].'" data-harga="'.$b['rata_harga_beli'].'">'.$b['kode_brg'].' - '.$b['nama_brg'].'</option>';
                     }
                     ?>
                 </select>

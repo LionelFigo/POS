@@ -2,7 +2,7 @@
 require_once "../database/koneksi.php";
 
 $authority = @$_SESSION['peran'];
-if($authority != 's'){
+if($authority != 'k'){
   echo '<script>alert("User melakukan Cross Authority")</script>';
   echo '<script>window.location.href="../logout.php"</script>';
 }else {
@@ -10,7 +10,7 @@ if($authority != 's'){
 <!DOCTYPE html>
 <html lang="en">
 <?php include '../css.php'; ?>
-<?php $hal = 'nota_beli_superadmin'; ?>
+<?php $hal = 'nota_jual_kasir'; ?>
 <!--
 `body` tag options:
 
@@ -72,7 +72,7 @@ if($authority != 's'){
       </div>
 
       <!-- Sidebar Menu --> 
-      <?php include '../sidebar_superadmin.php'; ?>
+      <?php include '../sidebar_kasir.php'; ?>
       <!-- /.sidebar-menu -->
     <!-- /.sidebar -->
   </aside>
@@ -82,66 +82,91 @@ if($authority != 's'){
     <!-- Content Header (Page header) -->
     <div class="content-header">
       <div class="container-fluid">
-        <div class="card">
-            <?php
+         <?php
             $kode_nota = @$_GET['kode_nota'];
             $kode_supplier = @$_GET['kode_supplier'];
+            $ambil_supplier = mysqli_query($koneksi, "SELECT * from supplier where kode_supplier = '$kode_supplier'")or die(mysqli_error($koneksi));
+            $data_supplier = mysqli_fetch_assoc($ambil_supplier);
+            $nama_supplier = $data_supplier['nama_supplier'];
             ?>
-            <div class="card-header">
-                <h3 class="card-title"><b>Detail Nota Beli - <?= $kode_nota ?></b></h3>
+        <h3 class="card-title"><b>Detail Nota Jual - <?= $kode_nota ?> - <?= $nama_supplier ?></b></h3><br>
+        <div class="card card-primary card-tabs">
+            <div class="card-header p-0 pt-1">
+                <ul class="nav nav-tabs" id="custom-tabs-one-tab" role="tablist">
+                    <li class="nav-item">
+                        <a class="nav-link active" id="custom-tab1" data-toggle="pill" href="#tab-reguler" role="tab" aria-controls="custom-tab1" aria-selected="true">Reguler</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" id="custom-tab2" data-toggle="pill" href="#tab-konsinyasi" role="tab" aria-controls="custom-tab2" aria-selected="false">Konsinyasi</a>
+                    </li>
+                </ul>
             </div>
             <div class="card-body">
                 <button type="button" class="btn btn-primary mb-2" data-toggle="modal" data-target="#modal-tambah"><i class="fas fa-plus"></i> Tambah Nota</button>
                 <a href="pdf.php?kode_nota=<?= $kode_nota ?>" target="_blank" class="btn btn-danger mb-2" type="button"><i class="fas fa-file-pdf"></i> Export Nota</a>
 
-                <table id="example1" class="table table-bordered table-striped">
-                    <thead>
-                        <tr>
-                            <th>No</th>
-                            <th>Nama Barang</th>
-                            <th>Jumlah</th>
-                            <th>Harga Beli</th>
-                            <th>Total Harga</th>
-                            <th>Aksi</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <?php
-                        $ambil_detail = mysqli_query($koneksi, "SELECT * from detail_notabeli where kode_nota = '$kode_nota'")or die(mysqli_error($koneksi));
-                        $rv = mysqli_num_rows($ambil_detail);
-                        if($rv > 0){
-                            $no = 1;
-                            while($data_detail = mysqli_fetch_assoc($ambil_detail)){
-                                $urut = $data_detail['urut'];
-                                $kode_brg = $data_detail['kode_brg'];
-                                $jumlah = $data_detail['jumlah'];
-                                $total_harga = $data_detail['total_harga_beli'];
-                                $ambil_barang = mysqli_query($koneksi, "SELECT * from barang where kode_brg = '$kode_brg'")or die(mysqli_error($koneksi));
-                                $rv = mysqli_num_rows($ambil_barang);
+                <div class="tab-content" id="custom-tabs-one-tabContent">
+                    <?php
+                    $kategori_tab = [
+                        ['id' => 'tab-reguler', 'jenis_brg' => 'reguler', 'active' => 'show active'],
+                        ['id' => 'tab-konsinyasi', 'jenis_brg' => 'konsinyasi', 'active' => ''],
+                    ];
+
+                    foreach ($kategori_tab as $tab){
+                    ?>
+                    <div class="tab-pane fade <?= $tab['active'] ?>" id="<?= $tab['id'] ?>" role="tabpanel">
+                        <table id="tabel-<?= $tab['id'] ?>" class="table table-bordered table-striped tabel-data" style="width:100%">
+                            <thead>
+                                <tr>
+                                    <th>No</th>
+                                    <th>Nama Barang</th>
+                                    <th>Jumlah</th>
+                                    <th>Harga Jual</th>
+                                    <th>Total Harga</th>
+                                    <th>Aksi</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <?php
+                                $jenis_brg = $tab['jenis_brg'];
+                                $ambil_detail = mysqli_query($koneksi, "SELECT * from detail_notajual where kode_nota = '$kode_nota'")or die(mysqli_error($koneksi));
+                                $rv = mysqli_num_rows($ambil_detail);
                                 if($rv > 0){
-                                    while($data_brg = mysqli_fetch_assoc($ambil_barang)){
-                                        $nama_brg = $data_brg['nama_brg'];
-                                        $harga_brg = $data_brg['rata_harga_beli'];
-                                        ?>
-                                        <tr>
-                                            <td><?= $no++ ?></td>
-                                            <td><?= $nama_brg ?></td>
-                                            <td><?= $jumlah ?></td>
-                                            <td><?= $harga_brg ?></td>
-                                            <td><?= $total_harga ?></td>
-                                            <td>
-                                                <a href="edit.php?urut=<?= $urut ?>" class="btn btn-warning btn-sm"><i class="fas fa-edit"></i></a>
-                                                <a href="hapus.php?urut=<?= $urut ?>" class="btn btn-danger btn-sm"><i class="fas fa-trash"></i></a>
-                                            </td>
-                                        </tr>
-                                        <?php
+                                    $no = 1;
+                                    while($data_detail = mysqli_fetch_assoc($ambil_detail)){
+                                        $urut = $data_detail['urut'];
+                                        $kode_brg = $data_detail['kode_brg'];
+                                        $jumlah = $data_detail['jumlah'];
+                                        $total_harga = $data_detail['total_harga_jual'];
+                                        $ambil_barang = mysqli_query($koneksi, "SELECT * from barang where kode_brg = '$kode_brg' and jenis_brg = '$jenis_brg'")or die(mysqli_error($koneksi));
+                                        $rv = mysqli_num_rows($ambil_barang);
+                                        if($rv > 0){
+                                            while($data_brg = mysqli_fetch_assoc($ambil_barang)){
+                                                $nama_brg = $data_brg['nama_brg'];
+                                                $harga_brg = $data_brg['harga_jual'];
+                                                ?>
+                                                <tr>
+                                                    <td><?= $no++ ?></td>
+                                                    <td><?= $nama_brg ?></td>
+                                                    <td><?= $jumlah ?></td>
+                                                    <td><?= $harga_brg ?></td>
+                                                    <td><?= $total_harga ?></td>
+                                                    <td>
+                                                        <a href="edit.php?urut=<?= $urut ?>" class="btn btn-warning btn-sm"><i class="fas fa-edit"></i></a>
+                                                        <a href="hapus.php?urut=<?= $urut ?>" class="btn btn-danger btn-sm"><i class="fas fa-trash"></i></a>
+                                                    </td>
+                                                </tr>
+                                                <?php
+                                            }
+                                        }
                                     }
                                 }
-                            }
-                        }
-                        ?>
-                    </tbody>
-                </table>
+                                ?>
+                            </tbody>
+                        </table>
+                    </div>
+                    <?php } ?>
+                </div>
             </div>
         </div>
       </div> 
@@ -175,13 +200,12 @@ if($authority != 's'){
             <div class="form-group">
                 <label for="kode_nota">Kode Nota</label>
                 <input type="text" maxlength="10" name="kode_nota" class="form-control" value="<?= $kode_nota ?>" id="kode_nota" readonly>
-                <input type="text" maxlength="10" name="kode_supplier" class="form-control" value="<?= $kode_supplier ?>" id="kode_supplier" hidden>
             </div>
             <div class="form-group">
                 <label for="kode_brg">Pilih Barang</label>
                 <select name="kode_brg" class="form-control">
                     <?php
-                    $ambil_brg = mysqli_query($koneksi, "SELECT * FROM barang where kode_supplier = '$kode_supplier' and jenis_brg = 'reguler'")or die(mysqli_error($koneksi));
+                    $ambil_brg = mysqli_query($koneksi, "SELECT * FROM barang where kode_supplier = '$kode_supplier'")or die(mysqli_error($koneksi));
                     $rv_b = mysqli_num_rows($ambil_brg);
                     if($rv_b > 0){
                         while($data_barang = mysqli_fetch_assoc($ambil_brg)){
@@ -218,6 +242,15 @@ if($authority != 's'){
 
 <?php include '../script.php'; ?>
 </body>
+<script>
+  $(function(){
+    $('.tabel-data').DataTable();
+
+    $('a[data-toggle="pill"]').on('shown.bs.tab', function (e) {
+          $.fn.dataTable.tables({ visible: true, api: true }).columns.adjust();
+      });
+  });
+</script>
 </html>
 <?php 
 }

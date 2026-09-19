@@ -2,7 +2,7 @@
 require_once "../database/koneksi.php";
 
 $authority = @$_SESSION['peran'];
-if($authority != 's'){
+if($authority != 'k'){
   echo '<script>alert("User melakukan Cross Authority")</script>';
   echo '<script>window.location.href="../logout.php"</script>';
 }else {
@@ -10,7 +10,7 @@ if($authority != 's'){
 <!DOCTYPE html>
 <html lang="en">
 <?php include '../css.php'; ?>
-<?php $hal = 'nota_jual_superadmin'; ?>
+<?php $hal = 'nota_beli_kasir'; ?>
 <!--
 `body` tag options:
 
@@ -72,7 +72,7 @@ if($authority != 's'){
       </div>
 
       <!-- Sidebar Menu --> 
-      <?php include '../sidebar_superadmin.php'; ?>
+      <?php include '../sidebar_kasir.php'; ?>
       <!-- /.sidebar-menu -->
     <!-- /.sidebar -->
   </aside>
@@ -83,66 +83,60 @@ if($authority != 's'){
     <div class="content-header">
       <div class="container-fluid">
         <div class="card">
+            <?php
+            $kode_nota = @$_GET['kode_nota'];
+            $kode_supplier = @$_GET['kode_supplier'];
+            ?>
             <div class="card-header">
-                <h3 class="card-title"><b>Data Nota Jual</b></h3>
+                <h3 class="card-title"><b>Detail Nota Beli - <?= $kode_nota ?></b></h3>
             </div>
             <div class="card-body">
                 <button type="button" class="btn btn-primary mb-2" data-toggle="modal" data-target="#modal-tambah"><i class="fas fa-plus"></i> Tambah Nota</button>
+                <a href="pdf.php?kode_nota=<?= $kode_nota ?>" target="_blank" class="btn btn-danger mb-2" type="button"><i class="fas fa-file-pdf"></i> Export Nota</a>
 
                 <table id="example1" class="table table-bordered table-striped">
                     <thead>
                         <tr>
                             <th>No</th>
-                            <th>Kode Nota</th>
-                            <th>kode Supplier</th>
-                            <th>Tanggal Jual</th>
-                            <th>Total Jual</th>
-                            <th>Status</th>
-                            <th>Keterangan</th>
+                            <th>Nama Barang</th>
+                            <th>Jumlah</th>
+                            <th>Harga Beli</th>
+                            <th>Total Harga</th>
                             <th>Aksi</th>
                         </tr>
                     </thead>
                     <tbody>
                         <?php
-                        $ambil_nota_beli = mysqli_query($koneksi, "SELECT * from nota_penjualan")or die(mysqli_error($koneksi));
-                        $rv = mysqli_num_rows($ambil_nota_beli);
+                        $ambil_detail = mysqli_query($koneksi, "SELECT * from detail_notabeli where kode_nota = '$kode_nota'")or die(mysqli_error($koneksi));
+                        $rv = mysqli_num_rows($ambil_detail);
                         if($rv > 0){
                             $no = 1;
-                            while($data_nota_beli = mysqli_fetch_assoc($ambil_nota_beli)){
-                                $kode_nota = $data_nota_beli['kode_nota'];
-                                $kode_supplier = $data_nota_beli['kode_supplier'];
-                                $tgl_penjualan = $data_nota_beli['tgl_penjualan'];
-                                $total_penjualan = $data_nota_beli['total_penjualan'];
-                                $status = $data_nota_beli['status_bayar'];
-                                $keterangan = $data_nota_beli['keterangan'];
-                                ?>
-                                <tr>
-                                    <td><?= $no++ ?></td>
-                                    <td><?= $kode_nota ?></td>
-                                    <td><?= $kode_supplier ?></td>
-                                    <td><?= $tgl_penjualan ?></td>
-                                    <td><?= $total_penjualan ?></td>
-                                    <td>
-                                        <?php
-                                        if($status == 'L'){
-                                            echo 'Lunas';
-                                        }elseif($status == '2'){
-                                            echo 'Dibayar 75%';
-                                        }elseif($status == '3'){
-                                            echo 'Dibayar 50%';
-                                        }else{
-                                            echo 'Dibayar 25%';
-                                        }
+                            while($data_detail = mysqli_fetch_assoc($ambil_detail)){
+                                $urut = $data_detail['urut'];
+                                $kode_brg = $data_detail['kode_brg'];
+                                $jumlah = $data_detail['jumlah'];
+                                $total_harga = $data_detail['total_harga_beli'];
+                                $ambil_barang = mysqli_query($koneksi, "SELECT * from barang where kode_brg = '$kode_brg'")or die(mysqli_error($koneksi));
+                                $rv = mysqli_num_rows($ambil_barang);
+                                if($rv > 0){
+                                    while($data_brg = mysqli_fetch_assoc($ambil_barang)){
+                                        $nama_brg = $data_brg['nama_brg'];
+                                        $harga_brg = $data_brg['rata_harga_beli'];
                                         ?>
-                                    </td>
-                                    <td><?= $keterangan ?></td>
-                                    <td>
-                                        <a href="../detail_notajual_superadmin?kode_nota=<?= $kode_nota ?>&kode_supplier=<?= $kode_supplier ?>" type="button" class="btn btn-success btn-sm"><i class="fas fa-list"></i></a>
-                                        <a href="edit.php?kode_nota=<?= $kode_nota ?>" type="button" class="btn btn-warning btn-sm"><i class="fas fa-edit"></i></a>
-                                        <a href="hapus.php?kode_nota=<?= $kode_nota ?>" type="button" class="btn btn-danger btn-sm"><i class="fas fa-trash"></i></a>
-                                    </td>
-                                </tr>
-                                <?php
+                                        <tr>
+                                            <td><?= $no++ ?></td>
+                                            <td><?= $nama_brg ?></td>
+                                            <td><?= $jumlah ?></td>
+                                            <td><?= $harga_brg ?></td>
+                                            <td><?= $total_harga ?></td>
+                                            <td>
+                                                <a href="edit.php?urut=<?= $urut ?>" class="btn btn-warning btn-sm"><i class="fas fa-edit"></i></a>
+                                                <a href="hapus.php?urut=<?= $urut ?>" class="btn btn-danger btn-sm"><i class="fas fa-trash"></i></a>
+                                            </td>
+                                        </tr>
+                                        <?php
+                                    }
+                                }
                             }
                         }
                         ?>
@@ -180,28 +174,30 @@ if($authority != 's'){
         <div class="modal-body">
             <div class="form-group">
                 <label for="kode_nota">Kode Nota</label>
-                <input type="text" maxlength="10" name="kode_nota" class="form-control" id="kode_nota" placeholder="Masukkan Kode Nota" required>
+                <input type="text" maxlength="10" name="kode_nota" class="form-control" value="<?= $kode_nota ?>" id="kode_nota" readonly>
+                <input type="text" maxlength="10" name="kode_supplier" class="form-control" value="<?= $kode_supplier ?>" id="kode_supplier" hidden>
             </div>
             <div class="form-group">
-                <label for="kode_supplier">Kode Supplier</label>
-                <input type="text" maxlength="10" name="kode_supplier" class="form-control" id="kode_supplier" placeholder="Masukkan Kode Supplier" required>
-            </div>
-            <div class="form-group">
-                <label for="tgl">Tanggal Jual</label>
-                <input type="date" name="tgl_penjualan" class="form-control" id="tgl_penjualan" required>
-            </div>
-            <div class="form-group">
-                <label for="status">Status</label>
-                <select name="status" class="form-control">
-                    <option value="L">Lunas</option>
-                    <option value="2">75%</option>
-                    <option value="3">50%</option>
-                    <option value="4">25%</option>
+                <label for="kode_brg">Pilih Barang</label>
+                <select name="kode_brg" class="form-control">
+                    <?php
+                    $ambil_brg = mysqli_query($koneksi, "SELECT * FROM barang where kode_supplier = '$kode_supplier' and jenis_brg = 'reguler'")or die(mysqli_error($koneksi));
+                    $rv_b = mysqli_num_rows($ambil_brg);
+                    if($rv_b > 0){
+                        while($data_barang = mysqli_fetch_assoc($ambil_brg)){
+                            $kode_barang = $data_barang['kode_brg'];
+                            $nama_barang = $data_barang['nama_brg'];
+                            ?>
+                            <option value="<?= $kode_barang ?>"><?= $nama_barang ?></option>
+                            <?php
+                        }
+                    }
+                    ?>
                 </select>
             </div>
             <div class="form-group">
-                <label for="keterangan">Keterangan</label>
-                <input type="textarea" name="keterangan" class="form-control" id="keterangan" placeholder="Tambahkan Keterangan">
+                <label for="jumlah">Jumlah</label>
+                <input type="number" name="jumlah" class="form-control" id="jumlah" placeholder="Masukkan Jumlah">
             </div>
         </div>
         <div class="modal-footer justify-content-between">
@@ -214,7 +210,6 @@ if($authority != 's'){
     </div>
     <!-- /.modal-dialog -->
     </div>
-    <header></header>
   <?php include '../footer.php'; ?>
 </div>
 <!-- ./wrapper -->

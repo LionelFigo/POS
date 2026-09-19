@@ -45,6 +45,24 @@
         </a>
       </li>
       <li class="nav-item">
+        <a href="../total_beli_superadmin/" class="nav-link <?= ($hal == 'total_beli_superadmin') ? 'active' : '' ?>">
+          <i class="nav-icon fas fa-cash-register"></i>
+          <p>Total Pembelian</p>
+        </a>
+      </li>
+      <li class="nav-item">
+        <a href="../total_jual_superadmin/" class="nav-link <?= ($hal == 'total_jual_superadmin') ? 'active' : '' ?>">
+          <i class="nav-icon fas fa-cash-register"></i>
+          <p>Total Penjualan</p>
+        </a>
+      </li>
+      <li class="nav-item">
+        <a href="../laba_rugi_superadmin/" class="nav-link <?= ($hal == 'laba_rugi_superadmin') ? 'active' : '' ?>">
+          <i class="nav-icon fas fa-cash-register"></i>
+          <p>Laba Rugi</p>
+        </a>
+      </li>
+      <li class="nav-item">
         <a href="../ganti_pass_superadmin/" class="nav-link <?= ($hal == 'sandi_superadmin') ? 'active' : '' ?>">
           <i class="nav-icon fas fa-key"></i>
           <p>Ganti Password</p>

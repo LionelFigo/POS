@@ -72,7 +72,7 @@ if($authority != 'k'){
       </div>
 
       <!-- Sidebar Menu --> 
-      <?php include '../sidebar_superadmin.php'; ?>
+      <?php include '../sidebar_kasir.php'; ?>
       <!-- /.sidebar-menu -->
     <!-- /.sidebar -->
   </aside>

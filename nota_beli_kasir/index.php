@@ -2,7 +2,7 @@
 require_once "../database/koneksi.php";
 
 $authority = @$_SESSION['peran'];
-if($authority != 's'){
+if($authority != 'k'){
   echo '<script>alert("User melakukan Cross Authority")</script>';
   echo '<script>window.location.href="../logout.php"</script>';
 }else {
@@ -10,7 +10,7 @@ if($authority != 's'){
 <!DOCTYPE html>
 <html lang="en">
 <?php include '../css.php'; ?>
-<?php $hal = 'nota_beli_superadmin'; ?>
+<?php $hal = 'nota_beli_kasir'; ?>
 <!--
 `body` tag options:
 
@@ -72,7 +72,7 @@ if($authority != 's'){
       </div>
 
       <!-- Sidebar Menu --> 
-      <?php include '../sidebar_superadmin.php'; ?>
+      <?php include '../sidebar_kasir.php'; ?>
       <!-- /.sidebar-menu -->
     <!-- /.sidebar -->
   </aside>
@@ -104,70 +104,70 @@ if($authority != 's'){
                 <button type="button" class="btn btn-primary mb-2" data-toggle="modal" data-target="#modal-tambah"><i class="fas fa-plus"></i> Tambah Nota</button>
 
                 <div class="tab-content" id="custom-tabs-one-tabContent">
-                  <?php
-                  $kategori_tab = [
-                      ['id' => 'custom-tabs-lunas', 'status_kode' => 'L', 'nama' => 'Lunas', 'active' => 'show active'],
-                      ['id' => 'custom-tabs-75',  'status_kode' => '4', 'nama' => 'Dibayar 75%', 'active' => ''],
-                      ['id' => 'custom-tabs-50',  'status_kode' => '3', 'nama' => 'Dibayar 50%', 'active' => ''],
-                      ['id' => 'custom-tabs-25',  'status_kode' => '2', 'nama' => 'Dibayar 25%', 'active' => ''],
-                  ];
+                    <?php
+                    $kategori_tab = [
+                        ['id' => 'custom-tabs-lunas', 'status_kode' => 'L', 'nama' => 'Lunas', 'active' => 'show active'],
+                        ['id' => 'custom-tabs-75',  'status_kode' => '4', 'nama' => 'Dibayar 75%', 'active' => ''],
+                        ['id' => 'custom-tabs-50',  'status_kode' => '3', 'nama' => 'Dibayar 50%', 'active' => ''],
+                        ['id' => 'custom-tabs-25',  'status_kode' => '2', 'nama' => 'Dibayar 25%', 'active' => ''],
+                    ];
 
-                  foreach ($kategori_tab as $tab){
-                  ?>
-                  <div class="tab-pane fade <?= $tab['active'] ?>" id="<?= $tab['id'] ?>" role="tabpanel">
-                      
-                      <table id="tabel-<?= $tab['id'] ?>" class="table table-bordered table-striped tabel-data" style="width:100%">
-                          <thead>
-                              <tr>
-                                  <th>No</th>
-                                  <th>Kode Nota</th>
-                                  <th>Kode Supplier</th>
-                                  <th>Tanggal Beli</th>
-                                  <th>Total Beli</th>
-                                  <th>Status</th>
-                                  <th>Keterangan</th>
-                                  <th>Aksi</th>
-                              </tr>
-                          </thead>
-                          <tbody>
-                              <?php
-                              $status_filter = $tab['status_kode'];
-                              
-                              $ambil_nota_beli = mysqli_query($koneksi, "SELECT * FROM nota_beli WHERE status_bayar = '$status_filter'") or die(mysqli_error($koneksi));
-                              
-                              if(mysqli_num_rows($ambil_nota_beli) > 0){
-                                  $no = 1;
-                                  while($data_nota_beli = mysqli_fetch_assoc($ambil_nota_beli)){
-                                      $kode_nota = $data_nota_beli['kode_nota'];
-                                      $kode_supplier = $data_nota_beli['kode_supplier'];
-                                      $tgl_pembelian = $data_nota_beli['tgl_pembelian'];
-                                      $total_pembelian = $data_nota_beli['total_pembelian'];
-                                      $status = $data_nota_beli['status_bayar'];
-                                      $keterangan = $data_nota_beli['keterangan'];
-                                      ?>
-                                      <tr>
-                                          <td><?= $no++ ?></td>
-                                          <td><?= $kode_nota ?></td>
-                                          <td><?= $kode_supplier ?></td>
-                                          <td><?= $tgl_pembelian ?></td>
-                                          <td><?= $total_pembelian ?></td>
-                                          <td><?= $tab['nama'] ?></td>
-                                          <td><?= $keterangan ?></td>
-                                          <td>
-                                              <a href="../detail_notabeli_superadmin?kode_nota=<?= $kode_nota ?>&kode_supplier=<?= $kode_supplier ?>" class="btn btn-success btn-sm"><i class="fas fa-list"></i></a>
-                                              <a href="edit.php?kode_nota=<?= $kode_nota ?>" class="btn btn-warning btn-sm"><i class="fas fa-edit"></i></a>
-                                              <a href="hapus.php?kode_nota=<?= $kode_nota ?>" class="btn btn-danger btn-sm"><i class="fas fa-trash"></i></a>
-                                          </td>
-                                      </tr>
-                                      <?php
-                                  }
-                              }
-                              ?>
-                          </tbody>
-                      </table>
-                  </div>
-                  <?php } ?>
-              </div>
+                    foreach ($kategori_tab as $tab){
+                    ?>
+                    <div class="tab-pane fade <?= $tab['active'] ?>" id="<?= $tab['id'] ?>" role="tabpanel">
+                        
+                        <table id="tabel-<?= $tab['id'] ?>" class="table table-bordered table-striped tabel-data" style="width:100%">
+                            <thead>
+                                <tr>
+                                    <th>No</th>
+                                    <th>Kode Nota</th>
+                                    <th>Kode Supplier</th>
+                                    <th>Tanggal Beli</th>
+                                    <th>Total Beli</th>
+                                    <th>Status</th>
+                                    <th>Keterangan</th>
+                                    <th>Aksi</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <?php
+                                $status_filter = $tab['status_kode'];
+                                
+                                $ambil_nota_beli = mysqli_query($koneksi, "SELECT * FROM nota_beli WHERE status_bayar = '$status_filter'") or die(mysqli_error($koneksi));
+                                
+                                if(mysqli_num_rows($ambil_nota_beli) > 0){
+                                    $no = 1;
+                                    while($data_nota_beli = mysqli_fetch_assoc($ambil_nota_beli)){
+                                        $kode_nota = $data_nota_beli['kode_nota'];
+                                        $kode_supplier = $data_nota_beli['kode_supplier'];
+                                        $tgl_pembelian = $data_nota_beli['tgl_pembelian'];
+                                        $total_pembelian = $data_nota_beli['total_pembelian'];
+                                        $status = $data_nota_beli['status_bayar'];
+                                        $keterangan = $data_nota_beli['keterangan'];
+                                        ?>
+                                        <tr>
+                                            <td><?= $no++ ?></td>
+                                            <td><?= $kode_nota ?></td>
+                                            <td><?= $kode_supplier ?></td>
+                                            <td><?= $tgl_pembelian ?></td>
+                                            <td><?= $total_pembelian ?></td>
+                                            <td><?= $tab['nama'] ?></td>
+                                            <td><?= $keterangan ?></td>
+                                            <td>
+                                                <a href="../detail_notabeli_kasir?kode_nota=<?= $kode_nota ?>&kode_supplier=<?= $kode_supplier ?>" class="btn btn-success btn-sm"><i class="fas fa-list"></i></a>
+                                                <a href="edit.php?kode_nota=<?= $kode_nota ?>" class="btn btn-warning btn-sm"><i class="fas fa-edit"></i></a>
+                                                <a href="hapus.php?kode_nota=<?= $kode_nota ?>" class="btn btn-danger btn-sm"><i class="fas fa-trash"></i></a>
+                                            </td>
+                                        </tr>
+                                        <?php
+                                    }
+                                }
+                                ?>
+                            </tbody>
+                        </table>
+                    </div>
+                    <?php } ?>
+                </div>
             </div>
         </div>
       </div> 

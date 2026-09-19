@@ -2,7 +2,7 @@
 require_once "../database/koneksi.php";
 
 $authority = @$_SESSION['peran'];
-if($authority != 's'){
+if($authority != 'k'){
   echo '<script>alert("User melakukan Cross Authority")</script>';
   echo '<script>window.location.href="../logout.php"</script>';
 }else {
@@ -10,7 +10,7 @@ if($authority != 's'){
 <!DOCTYPE html>
 <html lang="en">
 <?php include '../css.php'; ?>
-<?php $hal = 'nota_jual_superadmin'; ?>
+<?php $hal = 'nota_jual_kasir'; ?>
 <!--
 `body` tag options:
 
@@ -72,7 +72,7 @@ if($authority != 's'){
       </div>
 
       <!-- Sidebar Menu --> 
-      <?php include '../sidebar_superadmin.php'; ?>
+      <?php include '../sidebar_kasir.php'; ?>
       <!-- /.sidebar-menu -->
     <!-- /.sidebar -->
   </aside>
@@ -137,7 +137,7 @@ if($authority != 's'){
                                     </td>
                                     <td><?= $keterangan ?></td>
                                     <td>
-                                        <a href="../detail_notajual_superadmin?kode_nota=<?= $kode_nota ?>&kode_supplier=<?= $kode_supplier ?>" type="button" class="btn btn-success btn-sm"><i class="fas fa-list"></i></a>
+                                        <a href="../detail_notajual_kasir?kode_nota=<?= $kode_nota ?>&kode_supplier=<?= $kode_supplier ?>" type="button" class="btn btn-success btn-sm"><i class="fas fa-list"></i></a>
                                         <a href="edit.php?kode_nota=<?= $kode_nota ?>" type="button" class="btn btn-warning btn-sm"><i class="fas fa-edit"></i></a>
                                         <a href="hapus.php?kode_nota=<?= $kode_nota ?>" type="button" class="btn btn-danger btn-sm"><i class="fas fa-trash"></i></a>
                                     </td>

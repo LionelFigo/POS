@@ -7,6 +7,19 @@
               <i class="nav-icon fas fa-tachometer-alt"></i>
               <p>Beranda</p>
             </a>
+          </li>
+          <li class="nav-item">
+            <a href="../nota_beli_kasir/" class="nav-link <?= ($hal == 'nota_beli_kasir') ? 'active' : '' ?>">
+              <i class="nav-icon fas fa-shopping-cart"></i>
+              <p>Nota Beli</p>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a href="../nota_jual_kasir/" class="nav-link <?= ($hal == 'nota_jual_kasir') ? 'active' : '' ?>">
+              <i class="nav-icon fas fa-cash-register"></i>
+              <p>Nota Jual</p>
+            </a>
+          </li>
           <li class="nav-item">
             <a href="../ganti_pass_kasir/" class="nav-link <?= ($hal == 'sandi_kasir') ? 'active' : '' ?>">
               <i class="nav-icon fas fa-key"></i>
